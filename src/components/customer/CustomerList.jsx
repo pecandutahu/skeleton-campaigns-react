@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Pagination } from 'react-bootstrap';
 import axios from 'axios';
 import CustomerModal from './CustomerModal';
+import axiosInstance from '../../axiosConfig';
 
 const CustomerList = () => {
   const [customers, setCustomers] = useState([]);
@@ -17,8 +18,8 @@ const CustomerList = () => {
   }, []);
 
   const fetchCustomers = async () => {
-    const response = await axios.get(url);
-    setCustomers(response.data);
+    const response = await axiosInstance.get(url);
+    setCustomers(response.data.data);
   };
 
   const handleAddCustomer = () => {
@@ -33,7 +34,7 @@ const CustomerList = () => {
 
   const handleDeleteCustomer = async (id) => {
     if (confirm('Are you sure to delete this data?')) {
-      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/customers/${id}`);
+      await axiosInstance.delete(`${import.meta.env.VITE_BACKEND_URL}/customers/${id}`);
       fetchCustomers();
     }
   };

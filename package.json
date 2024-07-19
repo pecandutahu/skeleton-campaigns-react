@@ -14,11 +14,13 @@
     "@ckeditor/ckeditor5-react": "^8.0.0",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
+    "date-fns": "^3.6.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
     "react-modal": "^3.16.1",
-    "react-router-dom": "^6.24.1"
+    "react-router-dom": "^6.24.1",
+    "react-select": "^5.8.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

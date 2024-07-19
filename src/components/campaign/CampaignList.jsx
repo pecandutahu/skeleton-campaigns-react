@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Pagination } from 'react-bootstrap';
 import axios from 'axios';
 import CampaignModal from './CampaignModal';
+import axiosInstance from '../../axiosConfig';
 
 const CampaignList = () => {
   const [campaigns, setCampaigns] = useState([]);
@@ -15,8 +16,8 @@ const CampaignList = () => {
   }, []);
 
   const fetchCampaigns = async () => {
-    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/campaigns`);
-    setCampaigns(response.data);
+    const response = await axiosInstance.get(`${import.meta.env.VITE_BACKEND_URL}/campaigns`);
+    setCampaigns(response.data.data);
   };
 
   const handleAddCampaign = () => {
@@ -30,8 +31,10 @@ const CampaignList = () => {
   };
 
   const handleDeleteCampaign = async (id) => {
-    await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/campaigns/${id}`);
-    fetchCampaigns();
+    if (confirm("Are you sure to delete this data?")) {
+      await axiosInstance.delete(`${import.meta.env.VITE_BACKEND_URL}/campaigns/${id}`);
+      fetchCampaigns();
+    }
   };
 
   const handleCloseModal = () => setShowModal(false);

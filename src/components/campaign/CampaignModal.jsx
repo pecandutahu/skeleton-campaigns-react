@@ -3,6 +3,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import axios from "axios";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import axiosInstance from "../../axiosConfig";
 
 const CampaignModal = ( { show, handleClose, campaign, refreshCampaign} ) => {
   const [campaignName, setCampaignName] = useState('');
@@ -23,15 +24,15 @@ const CampaignModal = ( { show, handleClose, campaign, refreshCampaign} ) => {
   const handleSave = async () => {
     try {
       if (campaign) {
-        await axios.put(`${import.meta.env.VITE_BACKEND_URL}/campaigns/${campaign.campaignId}`, { campaignName, campaignContent });
+        await axiosInstance.put(`${import.meta.env.VITE_BACKEND_URL}/campaigns/${campaign.campaignId}`, { campaignName, campaignContent });
       } else {
-        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/campaigns`, { campaignName, campaignContent });
+        await axiosInstance.post(`${import.meta.env.VITE_BACKEND_URL}/campaigns`, { campaignName, campaignContent });
       }
       refreshCampaign();
       handleClose();
     } catch (error) {
       if (error.response && error.response.data) {
-        setErrors(error.response.data);
+        setErrors(error.response.data.fieldErrors);
       }
     }
   };

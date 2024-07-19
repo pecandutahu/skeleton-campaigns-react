@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
+import axiosInstance from "../../axiosConfig";
 
 const CustomerModal = ({ show, handleClose, customer, refreshCustomers }) => {
 
@@ -18,15 +19,15 @@ const CustomerModal = ({ show, handleClose, customer, refreshCustomers }) => {
     const handleSubmit = async () => {
         try {
             if (customer) {
-                await axios.put(`${import.meta.env.VITE_BACKEND_URL}/customers/${customer.id}`, { name, email });
+                await axiosInstance.put(`${import.meta.env.VITE_BACKEND_URL}/customers/${customer.customerId}`, { name, email });
             } else {
-                await axios.post(`${import.meta.env.VITE_BACKEND_URL}/customers`, { name, email });
+                await axiosInstance.post(`${import.meta.env.VITE_BACKEND_URL}/customers`, { name, email });
             }
             refreshCustomers();
             handleClose();
         } catch (error) {
-            if (error.response && error.response.data) {
-                setErrors(error.response.data);
+            if (error.response && error.response.data.fieldErrors) {
+                setErrors(error.response.data.fieldErrors);
             }
         }
     };
@@ -62,7 +63,7 @@ const CustomerModal = ({ show, handleClose, customer, refreshCustomers }) => {
 
                         />
                         <Form.Control.Feedback type="invalid">
-                          {errors.name}
+                          {errors.email}
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Form>
