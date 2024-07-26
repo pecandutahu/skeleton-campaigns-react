@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from "axios";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { ClassicEditor, editorConfig } from '../../ckeditorConfig';
+import 'ckeditor5/ckeditor5.css';
 import axiosInstance from "../../axiosConfig";
 
 const CampaignModal = ( { show, handleClose, campaign, refreshCampaign} ) => {
@@ -38,7 +39,7 @@ const CampaignModal = ( { show, handleClose, campaign, refreshCampaign} ) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal size="lg" show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>{campaign ? 'Edit Campaign' : 'Add Campaign'}</Modal.Title>
       </Modal.Header>
@@ -60,7 +61,7 @@ const CampaignModal = ( { show, handleClose, campaign, refreshCampaign} ) => {
             <Form.Label>Content</Form.Label>
 
             <CKEditor
-              editor={ClassicEditor}
+              editor={ClassicEditor} config={editorConfig}
               data={campaignContent}
               onChange={(event, editor) => {
                 const data = editor.getData();

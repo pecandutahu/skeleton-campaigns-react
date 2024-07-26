@@ -1,10 +1,12 @@
+// SendEmailModal.jsx
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import Select from 'react-select';
 import axios from 'axios';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axiosInstance from '../../axiosConfig';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import { ClassicEditor, editorConfig } from '../../ckeditorConfig';
+import 'ckeditor5/ckeditor5.css';
 
 const SendEmailModal = ({ show, handleClose, refreshEmailLogs }) => {
   const [subject, setSubject] = useState('');
@@ -24,7 +26,7 @@ const SendEmailModal = ({ show, handleClose, refreshEmailLogs }) => {
 
   const handleSave = async () => {
     try {
-      await axiosInstance.post(`${import.meta.env.VITE_BACKEND_URL}/send-mail/all`, { subject, content });
+      await axiosInstance.post(`${import.meta.env.VITE_BACKEND_URL}/send-mail/all`, { subject, content: encodeURIComponent(content) });
       refreshEmailLogs();
       handleClose();
     } catch (error) {
@@ -40,7 +42,7 @@ const SendEmailModal = ({ show, handleClose, refreshEmailLogs }) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal size='lg' show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>Send Mass Email</Modal.Title>
       </Modal.Header>
@@ -70,7 +72,7 @@ const SendEmailModal = ({ show, handleClose, refreshEmailLogs }) => {
           <Form.Group>
             <Form.Label>Content</Form.Label>
             <CKEditor
-              editor={ClassicEditor}
+              editor={ClassicEditor} config={editorConfig}
               data={content}
               onChange={(event, editor) => {
                 const data = editor.getData();

@@ -12,6 +12,8 @@
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^42.0.0",
     "@ckeditor/ckeditor5-react": "^8.0.0",
+    "@ckeditor/ckeditor5-source-editing": "^42.0.2",
+    "@tinymce/tinymce-react": "^5.1.1",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
     "date-fns": "^3.6.0",
