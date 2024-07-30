@@ -12,6 +12,9 @@ const CustomerList = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [customersPerPage] = useState(5);
+  
+  const [responseMessage, setResponseMessage] = useState('');
+  const [responseError, setResponseError] = useState(null);
 
   useEffect(() => {
     fetchCustomers();
@@ -52,6 +55,11 @@ const CustomerList = () => {
     <div>
       <h1>Customers</h1>
       <Button onClick={handleAddCustomer}>Add Customer</Button>
+      {(responseError || responseMessage)
+        ? <Alert className='mt-2' variant = {responseError ? "danger" : "success"} dismissible>
+        {responseError ? responseError : responseMessage}
+        </Alert> : ''
+      }
       <div className='table-responsive'>
       <Table striped bordered hover className='mt-2'>
         <thead>
@@ -85,7 +93,7 @@ const CustomerList = () => {
       </Pagination>
 
       </div>
-      <CustomerModal show={showModal} handleClose={handleCloseModal} customer={selectedCustomer} refreshCustomers={fetchCustomers} />
+      <CustomerModal show={showModal} handleClose={handleCloseModal} customer={selectedCustomer} refreshCustomers={fetchCustomers} setResponseError = {setResponseError} setResponseMessage = {setResponseMessage} />
     </div>
   );
 };

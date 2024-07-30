@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Pagination } from 'react-bootstrap';
+import { Table, Button, Pagination, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import CampaignModal from './CampaignModal';
 import axiosInstance from '../../axiosConfig';
@@ -10,6 +10,8 @@ const CampaignList = () => {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [campaignsPerPage] = useState(5);
+  const [responseMessage, setResponseMessage] = useState('');
+  const [responseError, setResponseError] = useState(null);
 
   useEffect(() => {
     fetchCampaigns();
@@ -32,8 +34,23 @@ const CampaignList = () => {
 
   const handleDeleteCampaign = async (id) => {
     if (confirm("Are you sure to delete this data?")) {
-      await axiosInstance.delete(`${import.meta.env.VITE_BACKEND_URL}/campaigns/${id}`);
-      fetchCampaigns();
+      try {
+        const response = await axiosInstance.delete(`${import.meta.env.VITE_BACKEND_URL}/campaigns/${id}`);
+        fetchCampaigns();
+        
+        if(response.data.messages) {
+          setResponseMessage(response.data.messages);
+        }else{
+          setResponseMessage("Data deleted successfuly");
+        }
+
+      } catch (error) {
+        if(error.response && error.response.errors && error.response.messages) {
+          setResponseMessage(error.response.messages);
+          setResponseError(error.response.errors);
+        }
+      }
+
     }
   };
 
@@ -51,6 +68,12 @@ const CampaignList = () => {
       <h1>Campaigns</h1>
       
       <Button onClick={handleAddCampaign}>Add Campaign</Button>
+      {(responseError || responseMessage)
+        ? <Alert className='mt-2' variant = {responseError ? "danger" : "success"} dismissible>
+        {responseError ? responseError : responseMessage}
+        </Alert> : ''
+      }
+      
       <div className="row mt-2">
         <div className="col-md-12">
           <div className="table-responsive">
@@ -68,7 +91,8 @@ const CampaignList = () => {
                   <tr key={campaign.campaignId}>
                     <td>{indexOfFirstCampaign + index + 1}</td>
                     <td>{campaign.campaignName}</td>
-                    <td>{campaign.campaignContent}</td>
+                    {/* <td>{campaign.campaignContent}</td> */}
+                    <td dangerouslySetInnerHTML={{__html: "<iframe height='300' width='600' srcdoc='" + campaign.campaignContent + "'></iframe>"}} />
                     <td>
                       <Button className='mx-2' variant="warning" onClick={() => handleEditCampaign(campaign)}>Edit</Button>
                       <Button variant="danger" onClick={() => handleDeleteCampaign(campaign.campaignId)}>Delete</Button>
@@ -87,7 +111,7 @@ const CampaignList = () => {
           </div>
         </div>
       </div>
-      <CampaignModal show={showModal} handleClose={handleCloseModal} campaign={selectedCampaign} refreshCampaign={fetchCampaigns} />
+      <CampaignModal show={showModal} handleClose={handleCloseModal} campaign={selectedCampaign} refreshCampaign={fetchCampaigns} setResponseError={setResponseError} setResponseMessage={setResponseMessage} />
     </div>
   );
 };

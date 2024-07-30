@@ -8,7 +8,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { ClassicEditor, editorConfig } from '../../ckeditorConfig';
 import 'ckeditor5/ckeditor5.css';
 
-const SendEmailModal = ({ show, handleClose, refreshEmailLogs }) => {
+const SendEmailModal = ({ show, handleClose, refreshEmailLogs, setResponseError, setResponseMessage}) => {
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
   const [campaigns, setCampaigns] = useState([]);
@@ -25,14 +25,26 @@ const SendEmailModal = ({ show, handleClose, refreshEmailLogs }) => {
   };
 
   const handleSave = async () => {
+    setResponseError(null);
+    setResponseMessage('');
     try {
-      await axiosInstance.post(`${import.meta.env.VITE_BACKEND_URL}/send-mail/all`, { subject, content: encodeURIComponent(content) });
+      const response = await axiosInstance.post(`${import.meta.env.VITE_BACKEND_URL}/send-mail/all`, { subject, content: encodeURIComponent(content) });
       refreshEmailLogs();
       handleClose();
+      if(response.data.messages != undefined) {
+        setResponseMessage(response.data.messages);
+      }else{
+        setResponseMessage("Email sent queue successfully to customers");
+      }
     } catch (error) {
+      console.log(error)
       if (error.response && error.response.data.fieldErrors) {
         setErrors(error.response.data.fieldErrors);
       }
+      if (error.response && error.response.data.errors) {
+        setResponseError(error.response.data.errors);
+      }
+      
     }
   };
 

@@ -3,7 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import axiosInstance from "../../axiosConfig";
 
-const CustomerModal = ({ show, handleClose, customer, refreshCustomers }) => {
+const CustomerModal = ({ show, handleClose, customer, refreshCustomers, setResponseError, setResponseMessage }) => {
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -25,9 +25,12 @@ const CustomerModal = ({ show, handleClose, customer, refreshCustomers }) => {
             }
             refreshCustomers();
             handleClose();
+            setResponseMessage('Customer saved successfully.');
         } catch (error) {
             if (error.response && error.response.data.fieldErrors) {
                 setErrors(error.response.data.fieldErrors);
+                setResponseError(error.response.data.errors);
+                setResponseMessage(error.response.data.messages);
             }
         }
     };

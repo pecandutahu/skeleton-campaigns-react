@@ -6,7 +6,7 @@ import { ClassicEditor, editorConfig } from '../../ckeditorConfig';
 import 'ckeditor5/ckeditor5.css';
 import axiosInstance from "../../axiosConfig";
 
-const CampaignModal = ( { show, handleClose, campaign, refreshCampaign} ) => {
+const CampaignModal = ( { show, handleClose, campaign, refreshCampaign, setResponseError, setResponseMessage} ) => {
   const [campaignName, setCampaignName] = useState('');
   const [campaignContent, setCampaignContent] = useState('');
   const [errors, setErrors] = useState({});
@@ -29,11 +29,14 @@ const CampaignModal = ( { show, handleClose, campaign, refreshCampaign} ) => {
       } else {
         await axiosInstance.post(`${import.meta.env.VITE_BACKEND_URL}/campaigns`, { campaignName, campaignContent });
       }
+      setResponseMessage('Campaign saved successfully.');
       refreshCampaign();
       handleClose();
     } catch (error) {
       if (error.response && error.response.data) {
         setErrors(error.response.data.fieldErrors);
+        setResponseError(error.response.data.errors);
+        setResponseMessage(error.response.data.messages);
       }
     }
   };
@@ -68,9 +71,7 @@ const CampaignModal = ( { show, handleClose, campaign, refreshCampaign} ) => {
                 setCampaignContent(data);
               }}
             />
-            <Form.Control.Feedback type="invalid">
-              {errors.campaignContent}
-            </Form.Control.Feedback>
+            {errors.campaignContent && <div className="invalid-feedback d-block">{errors.campaignContent}</div>}
           </Form.Group>
         </Form>
       </Modal.Body>

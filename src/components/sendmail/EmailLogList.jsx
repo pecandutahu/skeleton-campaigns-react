@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Pagination, Form } from 'react-bootstrap';
+import { Table, Button, Pagination, Form, Alert } from 'react-bootstrap';
 import axiosInstance from '../../axiosConfig';
 import SendEmailModal from './SendEmailModal';
 import { format } from 'date-fns';
@@ -13,6 +13,8 @@ const EmailLogList = () => {
   const [filterColumn, setFilterColumn] = useState('');
   const [filterValue, setFilterValue] = useState('');
   const [totalPages, setTotalPages] = useState(1);
+  const [responseMessage, setResponseMessage] = useState('');
+  const [responseError, setResponseError] = useState(null);
 
   useEffect(() => {
     fetchEmailLogs();
@@ -60,6 +62,11 @@ const EmailLogList = () => {
     <div>
       <h1>Email Mass Log</h1>
       <Button className='mt-2' onClick={handleSendEmail}>Send Mass Email</Button>
+      {(responseError || responseMessage)
+        ? <Alert className='mt-2' variant = {responseError ? "danger" : "success"} dismissible>
+        {responseError ? responseError : responseMessage}
+        </Alert> : ''
+      }
       <div className="mt-2">
         <Form inline>
           <Form.Group controlId="formSortBy">
@@ -116,7 +123,7 @@ const EmailLogList = () => {
             </Pagination.Item>
           ))}
         </Pagination>
-        <SendEmailModal show={showModal} handleClose={handleCloseModal} refreshEmailLogs={fetchEmailLogs} />
+        <SendEmailModal show={showModal} handleClose={handleCloseModal} refreshEmailLogs={fetchEmailLogs} setResponseError = {setResponseError} setResponseMessage = {setResponseMessage} />
       </div>
     </div>
   );
