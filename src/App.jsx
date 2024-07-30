@@ -12,8 +12,9 @@ const App = () => {
   const { token, setToken } = useAuth();
 
   return (
-      <Container>
-        <Navbar bg="dark" variant="dark" expand="lg">
+    <div>
+      <Navbar bg="dark" variant="dark" expand="lg">
+        <Container>
           <Navbar.Brand as={Link} to="/">Home</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
@@ -22,7 +23,9 @@ const App = () => {
               <Nav.Link as={Link} to="/campaign">Campaigns</Nav.Link>
             </Nav>
           </Navbar.Collapse>
-        </Navbar>
+        </Container>
+      </Navbar>
+      <Container>
         <Routes>
           <Route path="/login" element={token ? <Navigate to="/" /> : <Login setToken={setToken} />} />
           <Route path="/customer" element={<PrivateRoute><CustomerList /></PrivateRoute>} />
@@ -30,6 +33,7 @@ const App = () => {
           <Route path="/" element={<PrivateRoute><EmailLogList /></PrivateRoute>} />
         </Routes>
       </Container>
+    </div>
   );
 };
 
